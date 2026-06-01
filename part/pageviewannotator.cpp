@@ -404,9 +404,9 @@ public:
         Okular::SignatureAnnotation *ann = new Okular::SignatureAnnotation();
         ann->setFlags(ann->flags() | Okular::Annotation::FixedRotation);
 
-        const QString certSubjectCommonName = m_signingInformation->certificate->subjectInfo(Okular::CertificateInfo::CommonName, Okular::CertificateInfo::EmptyString::TranslatedNotAvailable);
+        const QString nameToShow = m_signingInformation->certificate->subjectInfo(Okular::CertificateInfo::CommonName, Okular::CertificateInfo::EmptyString::Empty ).isEmpty() ? m_signingInformation->certificate->subjectInfo(Okular::CertificateInfo::EmailAddress, Okular::CertificateInfo::EmptyString::TranslatedNotAvailable) : m_signingInformation->certificate->subjectInfo(Okular::CertificateInfo::CommonName, Okular::CertificateInfo::EmptyString::TranslatedNotAvailable);
         const QString datetime = QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd hh:mm:ss t"));
-        const QString signatureText = i18n("Signed by: %1\n\nDate: %2", certSubjectCommonName, datetime);
+        const QString signatureText = i18n("Signed by: %1\n\nDate: %2", nameToShow, datetime);
 
         m_creationCompleted = false;
         clicked = false;
@@ -415,7 +415,7 @@ public:
             return QList<Okular::Annotation *>();
         }
 
-        ann->setLeftText(certSubjectCommonName);
+        ann->setLeftText(nameToShow);
         ann->setText(signatureText);
         ann->setImagePath(m_signingInformation->backgroundImagePath);
 
